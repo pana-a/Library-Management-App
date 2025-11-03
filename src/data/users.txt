@@ -1,0 +1,5 @@
+1;Ana Pop;ana@ex.com;-1940807313;STUDENT
+2;Larisa Ion;larisa@ex.com;-1940807313;STUDENT
+3;Alexandra Stanescu;alexandra@ex.com;-1940807313;STUDENT
+4;Maria Ionescu;maria@ex.com;-1940807313;STUDENT
+
