@@ -3,6 +3,8 @@ package ui;
 import models.User;
 import services.AuthService;
 import services.exceptions.InvalidCredentialsException;
+import services.BookService;
+import services.LoanService;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,9 +15,14 @@ public class WelcomeFrame {
     private JFrame frame;
     private JPanel panel;
     private AuthService authService;
+    private final BookService bookService;
+    private final LoanService loanService;
 
-    public WelcomeFrame(AuthService authService){
+    public WelcomeFrame(AuthService authService, BookService bookService, LoanService loanService){
         this.authService =  authService;
+        this.bookService = bookService;
+        this.loanService = loanService;
+
         frame = new JFrame("Biblioteca online");
 
         panel = new JPanel();
@@ -75,8 +82,16 @@ public class WelcomeFrame {
                             "Autentificat ca: " + user.getName() + " (" + user.getRole() + ")",
                             "Autentificare reusita",
                             JOptionPane.INFORMATION_MESSAGE);
-
+                    textFieldEmail.setText("");
+                    textFieldPassword.setText("");
+                    if (user.getRole() == User.Role.STUDENT) {
+                        new StudentFrame(user, bookService, loanService);
+                    } else {
+                        new LibrarianFrame(user, bookService);
+                    }
                 }catch(InvalidCredentialsException ex){
+                    textFieldEmail.setText("");
+                    textFieldPassword.setText("");
                     JOptionPane.showMessageDialog(null, ex.getMessage(), "Eroare login", JOptionPane.ERROR_MESSAGE);
                 }
             }
