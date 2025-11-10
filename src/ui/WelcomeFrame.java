@@ -97,7 +97,6 @@ public class WelcomeFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 RegisterFrame registerFrame = new RegisterFrame(authService);
-                //JOptionPane.showMessageDialog(null, "Iti vom crea un cont!");
             }
         });
 

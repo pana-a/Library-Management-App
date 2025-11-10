@@ -1,21 +1,39 @@
 import models.User;
 import models.repositories.UserRepository;
+import models.repositories.BookRepository;
 import services.AuthService;
+import services.BookService;
 import ui.WelcomeFrame;
-import utils.PasswordUtil;
 
 public class Main {
     public static void main(String[] args) {
-        UserRepository repo = new UserRepository("D:\\ASE\\MASTER\\An I, sem I\\PPOO\\Proiect_PPOO\\src\\data\\users.txt");
-        //repo.addUser("Ana Pop", "ana@ex.com", PasswordUtil.hashPassword("parola123"), User.Role.STUDENT);
-        //repo.addUser("Larisa Ion", "larisa@ex.com", PasswordUtil.hashPassword("parola123"), User.Role.STUDENT);
-        //repo.addUser("Alexandra Stanescu", "alexandra@ex.com", PasswordUtil.hashPassword("parola123"), User.Role.STUDENT);
-        //repo.addUser("Maria Ionescu", "maria@ex.com", PasswordUtil.hashPassword("parola123"), User.Role.STUDENT);
+        UserRepository userRepo = new UserRepository("src/data/users.txt");
+        BookRepository bookRepo = new BookRepository("src/data/books.txt");
 
-        //User found = repo.findByEmail("ana@ex.com");
-        //System.out.println(found);
-        AuthService auth = new AuthService(repo);
-        WelcomeFrame welcomeFrame = new WelcomeFrame(auth);
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            public void run() {
+                userRepo.saveOnExit();
+                bookRepo.saveOnExit();
+                System.out.println("Datele au fost salvate la închiderea aplicației.");
+            }
+        });
 
+        AuthService authService = new AuthService(userRepo);
+        BookService bookService = new BookService(bookRepo);
+//
+//        try {
+//            User admin = new User(0, "Bibliotecar", "admin@lib.com", String.valueOf("admin".hashCode()), User.Role.LIBRARIAN);
+//            System.out.println("=== Test adăugare cărți ===");
+//            bookService.addBook(admin, "Clean Code", "Robert C. Martin", "Informatică", 2008, 3);
+//            bookService.addBook(admin, "Effective Java", "Joshua Bloch", "Informatică", 2018, 2);
+//
+//            System.out.println("Cărțile existente:");
+//            for (var b : bookService.listAll()) {
+//                System.out.println(" - " + b);
+//            }
+//        } catch (Exception e) {
+//            System.out.println("Eroare test: " + e.getMessage());
+//        }
+        new WelcomeFrame(authService);
     }
 }

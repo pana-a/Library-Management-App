@@ -30,7 +30,7 @@ public class UserRepository {
         if (users.containsKey(key)) return;
         User user = new User(nextId++, name, key, hashedPassword, role);
         users.put(key, user);
-        saveUsers();
+        //saveUsers();
     }
 
     //optional
@@ -77,5 +77,9 @@ public class UserRepository {
         } catch (IOException e) {
             System.out.println("Eroare la salvarea utilizatorilor: " + e.getMessage());
         }
+    }
+
+    public void saveOnExit(){
+        saveUsers();
     }
 }
