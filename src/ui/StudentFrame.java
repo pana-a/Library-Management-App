@@ -8,6 +8,7 @@ import services.LoanService;
 import services.exceptions.*;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.util.List;
 
@@ -30,52 +31,18 @@ public class StudentFrame {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
+        //Welcome message
         JLabel title = new JLabel("Bun venit, " + currentUser.getName() + "!");
         title.setFont(new Font("Arial", Font.BOLD, 20));
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        JButton btnSearchBooks = new JButton("Caută cărți după titlu");
-        JButton btnListAll     = new JButton("Listează toate cărțile");
-        JButton btnMyLoans     = new JButton("Împrumuturile mele");
-        JButton btnBorrow      = new JButton("Împrumută (după Book ID)");
-        JButton btnReturn      = new JButton("Returnează (după Loan ID)");
-        JButton btnLogout = new JButton("Delogare");
-
-        btnSearchBooks.setAlignmentX(Component.CENTER_ALIGNMENT);
-        btnListAll.setAlignmentX(Component.CENTER_ALIGNMENT);
-        btnMyLoans.setAlignmentX(Component.CENTER_ALIGNMENT);
-        btnBorrow.setAlignmentX(Component.CENTER_ALIGNMENT);
-        btnReturn.setAlignmentX(Component.CENTER_ALIGNMENT);
-        btnLogout.setAlignmentX(Component.CENTER_ALIGNMENT);
-
         panel.add(Box.createVerticalStrut(12));
         panel.add(title);
+
+        //Search book by name
+        JButton btnSearchBooks = new JButton("Caută cărți după titlu");
+        btnSearchBooks.setAlignmentX(Component.CENTER_ALIGNMENT);
         panel.add(Box.createVerticalStrut(12));
         panel.add(btnSearchBooks);
-        panel.add(Box.createVerticalStrut(6));
-        panel.add(btnListAll);
-        panel.add(Box.createVerticalStrut(6));
-        panel.add(btnMyLoans);
-        panel.add(Box.createVerticalStrut(6));
-        panel.add(btnBorrow);
-        panel.add(Box.createVerticalStrut(6));
-        panel.add(btnReturn);
-        panel.add(Box.createVerticalStrut(10));
-
-        area = new JTextArea(16, 48);
-        area.setEditable(false);
-        panel.add(new JScrollPane(area));
-
-        panel.add(Box.createVerticalStrut(6));
-        panel.add(btnLogout);
-
-        // --- acțiuni ---
-        btnListAll.addActionListener(e -> {
-            List<Book> books = bookService.listAllSorted();
-            printBooks(books, "Toate cărțile");
-        });
-        btnLogout.addActionListener(e -> frame.dispose());
-
         btnSearchBooks.addActionListener(e -> {
             String q = JOptionPane.showInputDialog(frame, "Caută în titlu (fragment):");
             if (q == null) return;
@@ -83,11 +50,53 @@ public class StudentFrame {
             printBooks(books, "Rezultate pentru: " + q);
         });
 
+        //Search book by genre
+        JButton btnSearchByGenre = new JButton("Caută cărți după gen");
+        btnSearchByGenre.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panel.add(Box.createVerticalStrut(6));
+        panel.add(btnSearchByGenre);
+        btnSearchByGenre.addActionListener(e -> {
+            String g = JOptionPane.showInputDialog(frame, "Introdu genul (ex: Romantic, Fantezie, Clasic):");
+            if (g == null) return; // anulare
+            var books = bookService.findByCollection(g);
+            printBooks(books, "Cărți din genul: " + g);
+        });
+
+        //Show all books by ID
+        JButton btnListAllById = new JButton("Listează toate cărțile (după ID)");
+        btnListAllById.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panel.add(Box.createVerticalStrut(6));
+        panel.add(btnListAllById);
+        btnListAllById.addActionListener(e -> {
+            List<Book> books = bookService.listAll();
+            printBooks(books, "Toate cărțile");
+        });
+
+        //Show all books alphabetical
+        JButton btnListAllByName = new JButton("Listează toate cărțile (alfabetic)");
+        btnListAllByName.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panel.add(Box.createVerticalStrut(6));
+        panel.add(btnListAllByName);
+        btnListAllByName.addActionListener(e -> {
+            List<Book> books = bookService.listAllSorted();
+            printBooks(books, "Toate cărțile");
+        });
+
+        //Show all loans
+        JButton btnMyLoans     = new JButton("Împrumuturile mele");
+        btnMyLoans.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panel.add(Box.createVerticalStrut(6));
+        panel.add(btnMyLoans);
         btnMyLoans.addActionListener(e -> {
             List<Loan> loans = loanService.listByUser(currentUser.getUserId());
             printLoans(loans, "Împrumuturile mele");
         });
 
+        //Borrow
+        JButton btnBorrow      = new JButton("Împrumută (după Book ID)");
+        btnBorrow.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panel.add(Box.createVerticalStrut(6));
+        panel.add(btnBorrow);
         btnBorrow.addActionListener(e -> {
             String s = JOptionPane.showInputDialog(frame, "Introdu Book ID pentru împrumut:");
             if (s == null) return;
@@ -106,6 +115,11 @@ public class StudentFrame {
             }
         });
 
+        //Return
+        JButton btnReturn      = new JButton("Returnează (după Loan ID)");
+        btnReturn.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panel.add(Box.createVerticalStrut(6));
+        panel.add(btnReturn);
         btnReturn.addActionListener(e -> {
             String s = JOptionPane.showInputDialog(frame, "Introdu Loan ID pentru returnare:");
             if (s == null) return;
@@ -122,13 +136,29 @@ public class StudentFrame {
             }
         });
 
+        //JTextArea for viewing all the books
+        panel.add(Box.createVerticalStrut(10));
+        area = new JTextArea(16, 48);
+        area.setEditable(false);
+        area.setMargin(new Insets(5, 10, 5, 10));
+        JScrollPane jScrollPane = new JScrollPane(area);
+        jScrollPane.setBorder(new EmptyBorder(0,15,0,15));
+        panel.add(jScrollPane);
+
+        //Logout
+        JButton btnLogout = new JButton("Delogare");
+        btnLogout.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panel.add(Box.createVerticalStrut(6));
+        panel.add(btnLogout);
+        btnLogout.addActionListener(e -> frame.dispose());
+
+        //final setup
         frame.setContentPane(panel);
         frame.setSize(560, 520);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
-        // încărcare inițială
-        printBooks(bookService.listAllSorted(), "Toate cărțile");
+        printBooks(bookService.listAll(), "Toate cărțile");
     }
 
     private void printBooks(List<Book> books, String header) {
@@ -142,6 +172,7 @@ public class StudentFrame {
         area.setText(sb.toString());
     }
 
+    //TODO - l.getBookId -> getBookNme
     private void printLoans(List<Loan> loans, String header) {
         StringBuilder sb = new StringBuilder();
         sb.append(header).append("\n");

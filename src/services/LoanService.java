@@ -10,6 +10,10 @@ import services.exceptions.*;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * Serviciu pentru gestionarea imprumuturilor de carti.
+ * Permite imprumutul, returnarea si listarea imprumuturilor.
+ */
 public class LoanService {
     private final LoanRepository loanRepo;
     private final BookRepository bookRepo;
@@ -22,6 +26,14 @@ public class LoanService {
     }
 
     // --------- Borrow / Return ---------
+
+    /**
+     * Creeaza un nou imprumut.
+     * @param actor utilizatorul care imprumuta
+     * @param bookId id-ul cartii
+     * @return imprumutul creat
+     * @throws PermissionDeniedException daca utilizatorul nu este student
+     */
 
     public Loan borrow(User actor, int bookId) throws PermissionDeniedException, NotFoundException,
             NoCopiesAvailableException, LoanLimitExceededException {
@@ -48,6 +60,14 @@ public class LoanService {
         return loanRepo.addLoan(actor.getUserId(), bookId, today, due);
     }
 
+
+
+    /**
+     * Marcheaza o carte ca returnata.
+     * @param actor utilizatorul care returneaza
+     * @param loanId id-ul imprumutului
+     * @return imprumutul actualizat
+     */
     public Loan returnBook(User actor, int loanId) throws NotFoundException, AlreadyReturnedException, PermissionDeniedException {
         Loan loan = requireLoan(loanId);
 

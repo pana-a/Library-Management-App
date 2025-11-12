@@ -1,6 +1,11 @@
 package models;
 
+/**
+ * Reprezinta un utilizator al aplicatiei (student sau bibliotecar).
+ * Instantele sunt immutable.
+ */
 public final class User {
+    /** Rolul unui utilizator. */
     public enum Role {STUDENT, LIBRARIAN}
 
     private final int userId;
@@ -9,6 +14,14 @@ public final class User {
     private final String hashedPassword;
     private final Role role;
 
+    /**
+     * Creeaza un utilizator.
+     * @param userId id intern
+     * @param name nume afisat
+     * @param email email (normalizat lowercase)
+     * @param hashedPassword parola hash-uita
+     * @param role rolul
+     */
     public User(int userId, String name, String email, String hashedPassword, Role role) {
         this.userId = userId;
         this.name = name;

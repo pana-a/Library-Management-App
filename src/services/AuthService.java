@@ -6,6 +6,10 @@ import services.exceptions.EmailAlreadyExistsException;
 import services.exceptions.InvalidCredentialsException;
 import utils.PasswordUtil;
 
+/**
+ * Serviciu pentru autentificare si inregistrare utilizatori.
+ * Ofera functionalitati de login si register.
+ */
 public class AuthService {
     private final UserRepository userRepository;
 
@@ -25,7 +29,15 @@ public class AuthService {
         if (role == null) throw new IllegalArgumentException("Rolul este obligatoriu.");
     }
 
-    //Register
+    /**
+     * Inregistreaza un nou utilizator.
+     * @param name numele complet
+     * @param email adresa de email
+     * @param password parola
+     * @param role rolul utilizatorului (STUDENT sau LIBRARIAN)
+     * @return utilizatorul creat
+     * @throws EmailAlreadyExistsException daca adresa exista deja
+     */
     public User register (String name, String email, String password, User.Role role)
             throws EmailAlreadyExistsException {
 
@@ -41,7 +53,13 @@ public class AuthService {
         return userRepository.findByEmail(normalizedEmail);
     }
 
-    //Login
+    /**
+     * Autentifica un utilizator existent.
+     * @param email email-ul introdus
+     * @param password parola in clar
+     * @return utilizatorul autentificat
+     * @throws InvalidCredentialsException daca datele nu sunt corecte
+     */
     public User login(String email, String password) throws InvalidCredentialsException{
         String normalizedEmail = normalizeEmail(email);
 

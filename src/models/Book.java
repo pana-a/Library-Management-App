@@ -2,6 +2,10 @@ package models;
 
 import java.util.Objects;
 
+/**
+ * Clasa care descrie o carte din biblioteca.
+ * Contine informatii despre titlu, autor, gen, an si numarul de exemplare.
+ */
 public final class Book implements Comparable<Book>{
     private final int bookId;            // auto-increment
     private final String title;          // ex: "Clean Code"
@@ -11,6 +15,16 @@ public final class Book implements Comparable<Book>{
     private final int totalCopies;       // total exemplare
     private final int availableCopies;   // exemplare disponibile
 
+    /**
+     * Creeaza o carte.
+     * @param bookId id unic
+     * @param title titlul
+     * @param author autorul
+     * @param collection gen/colectie
+     * @param year anul publicarii
+     * @param totalCopies exemplare totale
+     * @param availableCopies exemplare disponibile
+     */
     public Book(int bookId, String title, String author, String collection, int year,
                 int totalCopies, int availableCopies) {
         this.bookId = bookId;
@@ -30,7 +44,12 @@ public final class Book implements Comparable<Book>{
     public int getTotalCopies() { return totalCopies; }
     public int getAvailableCopies() { return availableCopies; }
 
-    // Helpers pentru „modificări” imutabile (creează noi instanțe cu valori schimbate)
+    /**
+     * Creeaza o copie a cartii cu numerele de exemplare actualizate.
+     * @param total total exemplare
+     * @param available exemplare disponibile
+     * @return noua instanta cu valorile actualizate
+     */
     public Book withCopies(int total, int available) {
         return new Book(bookId, title, author, collection, year, total, available);
     }
@@ -56,7 +75,10 @@ public final class Book implements Comparable<Book>{
         return Objects.hash(norm(title), norm(author), norm(collection), year);
     }
 
-    // sortare aliniată cu equals: title -> author -> collection -> year
+
+    /**
+     * Ordinea naturala: titlu → autor → colectie → an (case-insensitive).
+     */
     @Override
     public int compareTo(Book o) {
         int c1 = norm(this.title).compareTo(norm(o.title));

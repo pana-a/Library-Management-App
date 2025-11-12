@@ -79,7 +79,7 @@ public class WelcomeFrame {
                 try{
                     User user = authService.login(email, password);
                     JOptionPane.showMessageDialog(null,
-                            "Autentificat ca: " + user.getName() + " (" + user.getRole() + ")",
+                            "Autentificat ca: " + user.getName(),
                             "Autentificare reusita",
                             JOptionPane.INFORMATION_MESSAGE);
                     textFieldEmail.setText("");

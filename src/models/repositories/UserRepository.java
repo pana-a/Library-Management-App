@@ -6,6 +6,10 @@ import java.io.*;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/**
+ * Repository in memorie pentru utilizatori, indexat dupa email normalizat (lowercase).
+ * Persistenta in fisier text: {@code id;name;email;hashedPassword;role}
+ */
 public class UserRepository {
     private final File file;
     private final Map<String, User> users = new LinkedHashMap<>();
@@ -20,11 +24,22 @@ public class UserRepository {
         return email == null ? null : email.trim().toLowerCase();
     }
 
+    /**
+     * Cauta utilizatorul dupa email (case-insensitive).
+     * @param email adresa de email
+     * @return utilizatorul sau {@code null} daca nu exista
+     */
     public User findByEmail(String email) {
         return users.get(normalizeEmail(email));
     }
 
-    //add a new user
+    /**
+     * Adauga un utilizator nou daca emailul nu exista deja.
+     * @param name nume
+     * @param email email (normalizat intern)
+     * @param hashedPassword hash parola
+     * @param role rol
+     */
     public void addUser(String name, String email, String hashedPassword, User.Role role) {
         String key = normalizeEmail(email);
         if (users.containsKey(key)) return;

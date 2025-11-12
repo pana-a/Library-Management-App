@@ -7,6 +7,10 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Repository in memorie pentru imprumuturi, cu persistenta in fisier text.
+ * Formatele liniilor: {@code id;userId;bookId;borrowDate;dueDate;returnDate|-}
+ */
 public class LoanRepository {
     private final File file;
     private final List<Loan> loans = new ArrayList<>();
@@ -17,7 +21,14 @@ public class LoanRepository {
         loadLoans();
     }
 
-    // ---- API public ----
+    /**
+     * Creeaza un imprumut nou (activ).
+     * @param userId id utilizator
+     * @param bookId id carte
+     * @param borrowDate data imprumutului
+     * @param dueDate scadenta
+     * @return imprumutul creat
+     */
     public Loan addLoan(int userId, int bookId, LocalDate borrowDate, LocalDate dueDate) {
         Loan l = new Loan(nextId++, userId, bookId, borrowDate, dueDate, null);
         loans.add(l);
@@ -67,7 +78,6 @@ public class LoanRepository {
 
     public void saveOnExit() { saveLoans(); }
 
-    // ---- Persistență ----
     private void loadLoans() {
         loans.clear();
         nextId = 1;
@@ -109,4 +119,17 @@ public class LoanRepository {
             System.out.println("Eroare la salvarea împrumuturilor: " + e.getMessage());
         }
     }
+
+    /**
+     * @param bookId id carte
+     * @return {@code true} daca exista imprumuturi active pentru carte
+     */
+    public boolean hasActiveLoansForBook(int bookId) {
+        for (Loan l : loans) {
+            if (l.getBookId() == bookId && l.isActive()) return true;
+        }
+        return false;
+    }
+
+
 }
